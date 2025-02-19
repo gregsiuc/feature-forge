@@ -2,15 +2,22 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  const [features, setFeatures] = useState([]); // Array for submitted features
-  const [newFeature, setNewFeature] = useState(''); // Input field value
+  const [features, setFeatures] = useState([]); // Array of features with votes
+  const [newFeature, setNewFeature] = useState(''); // Input value
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Stops page reload
-    if (newFeature.trim()) { // Only add if not empty
+    e.preventDefault();
+    if (newFeature.trim()) {
       setFeatures([...features, { text: newFeature, votes: 0 }]);
-      setNewFeature(''); // Reset input
+      setNewFeature('');
     }
+  };
+
+  const handleVote = (index, change) => {
+    const updatedFeatures = features.map((feature, i) =>
+      i === index ? { ...feature, votes: feature.votes + change } : feature
+    );
+    setFeatures(updatedFeatures);
   };
 
   return (
@@ -28,7 +35,11 @@ function App() {
       <h2>Submitted Features</h2>
       <ul>
         {features.map((feature, index) => (
-          <li key={index}>{feature.text} (Votes: {feature.votes})</li>
+          <li key={index}>
+            {feature.text} (Votes: {feature.votes})
+            <button className="upvote" onClick={() => handleVote(index, 1)}>👍 Upvote</button>
+            <button className="downvote" onClick={() => handleVote(index, -1)}>👎 Downvote</button>
+          </li>
         ))}
       </ul>
     </div>
